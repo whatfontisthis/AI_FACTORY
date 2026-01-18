@@ -1,44 +1,28 @@
-# AI Factory Manager Masterclass
+# AI 공장장 부트캠프
 
-Bootcamp mission tracker for AI Factory Manager Masterclass.
+부트캠프에서 진행하는 미션을 기록합니다.
 
-## 강사님을 위한 과제 확인 방법
+## 미션 확인 방법
 
 ### 1. 저장소 클론
 ```bash
-git clone <repository-url>
+git clone ](https://github.com/whatfontisthis/AI_FACTORY.git
 cd AI_FACTORY
 ```
 
-### 2. 루트 의존성 설치 (Olly Molly)
+### 2. 개별 프로젝트 실행
+각 주차의 프로젝트는 독립적인 Node.js 앱입니다.
 ```bash
-npm install
-```
-
-### 3. 개별 프로젝트 실행
-각 주차의 프로젝트는 독립적인 Node.js 앱입니다:
-
-```bash
-# 예시: BMI 계산기 실행
+# 예시: 1주차 BMI 계산기 실행
 cd Week_1/G03_BMI_Calculator
 npm install
-npm start
+npm run dev
 ```
 
-### 4. 프로젝트 구조
-- 루트 레벨: Olly Molly AI 오케스트레이션 도구
+### 3. 프로젝트 구조
+- 루트 레벨: Olly Molly 칸반 보드 스타일 AI Dev Team 매니저
 - `Week_X/` 폴더: 각 주차별 과제 프로젝트
 - 각 프로젝트는 자체 `package.json`과 의존성을 가짐
-
-### 5. 필수 요구사항
-- Node.js (v18 이상 권장)
-- npm 또는 yarn
-
-## Progress Overview
-
-| Week | Completed | Total | Status |
-|------|-----------|-------|--------|
-| Week 1 | 0 | 6 | In Progress |
 
 ---
 
@@ -46,10 +30,9 @@ npm start
 
 ```
 Week_1/
-├── [ ] G01 - 개발된 앱의 파일들 뜯어보기 (Cursor IDE)
-├── [ ] G02 - SF 세계관 주인공 되어보기 (Olly Molly)
-├── [ ] G03 - BMI 측정기 앱
-├── [ ] G04 - ToDo 앱
-├── [ ] Q01 - 세금계산기 앱
-└── [ ] Q02 - 날씨 앱
+├── [✅] G01 - 개발된 앱의 파일들 뜯어보기 (Cursor IDE)
+├── [✅] G02 - SF 세계관 주인공 되어보기 (Olly Molly)
+├── [✅] G03 - BMI 측정기 앱
+├── [✅] Q01 - 세금계산기 앱
+└── [✅] Q02 - 날씨 앱
 ```
