@@ -1,12 +1,8 @@
-# AI 공장장 부트캠프
-
-부트캠프에서 진행하는 미션을 기록합니다.
-
-## 미션 확인 방법
+# AI 공장장 미션 저장소
 
 ### 1. 저장소 클론
 ```bash
-git clone ](https://github.com/whatfontisthis/AI_FACTORY.git
+git clone https://github.com/whatfontisthis/AI_FACTORY.git
 cd AI_FACTORY
 ```
 
@@ -24,9 +20,7 @@ npm run dev
 - `Week_X/` 폴더: 각 주차별 과제 프로젝트
 - 각 프로젝트는 자체 `package.json`과 의존성을 가짐
 
----
-
-## Week 1
+## Week 1 진행상황
 
 ```
 Week_1/
