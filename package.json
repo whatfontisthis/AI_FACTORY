@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "olly-molly"
+  },
+  "dependencies": {
+    "olly-molly": "^0.2.39"
+  }
+}
