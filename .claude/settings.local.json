@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where git:*)",
+      "Bash(powershell -Command \"Get-Content $PROFILE -ErrorAction SilentlyContinue\")",
+      "Bash(powershell -Command \"echo $PROFILE\")",
+      "Bash(conda config:*)",
+      "Bash(dir:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}
