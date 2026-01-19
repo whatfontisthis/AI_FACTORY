@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { calculateBMI, BMICategory } from '@/lib/bmi';
 
 export default function Home() {
   const [height, setHeight] = useState('170');
@@ -9,67 +10,74 @@ export default function Home() {
   const [category, setCategory] = useState('');
   const [error, setError] = useState('');
 
-  // Auto-calculate BMI when height or weight changes
+  // BMI 계산 함수 (클라이언트에서 직접 계산)
+  const calculateBMIValue = useCallback((heightValue: string, weightValue: string, immediate: boolean = false) => {
+    setError('');
+
+    const heightNum = parseFloat(heightValue);
+    const weightNum = parseFloat(weightValue);
+
+    if (!heightValue || !weightValue || isNaN(heightNum) || isNaN(weightNum)) {
+      setBmi(null);
+      setCategory('');
+      return;
+    }
+
+    if (heightNum <= 0 || weightNum <= 0) {
+      setError('키와 몸무게는 0보다 큰 값이어야 합니다.');
+      setBmi(null);
+      setCategory('');
+      return;
+    }
+
+    try {
+      // 클라이언트에서 직접 BMI 계산 (더 빠른 반응)
+      const result = calculateBMI(heightNum, weightNum);
+      setBmi(result.bmi);
+      setCategory(result.category);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'BMI 계산 중 오류가 발생했습니다.';
+      setError(errorMessage);
+      setBmi(null);
+      setCategory('');
+    }
+  }, []);
+
+  // 초기 로드 시 BMI 계산
   useEffect(() => {
-    const timeoutId = setTimeout(async () => {
-      setError('');
+    calculateBMIValue(height, weight, true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-      const heightNum = parseFloat(height);
-      const weightNum = parseFloat(weight);
-
-      if (!height || !weight || isNaN(heightNum) || isNaN(weightNum)) {
-        setBmi(null);
-        setCategory('');
-        return;
-      }
-
-      if (heightNum <= 0 || weightNum <= 0) {
-        setError('키와 몸무게는 0보다 큰 값이어야 합니다.');
-        setBmi(null);
-        setCategory('');
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/bmi/calculate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            height: heightNum,
-            weight: weightNum,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError(data.details || data.error);
-          setBmi(null);
-          setCategory('');
-          return;
-        }
-
-        setBmi(data.bmi);
-        setCategory(data.category);
-      } catch (err) {
-        setError('BMI 계산 중 오류가 발생했습니다.');
-        console.error('BMI calculation error:', err);
-        setBmi(null);
-        setCategory('');
-      }
+  // 숫자 입력 필드 변경 시 디바운싱 적용 (타이핑 중 불필요한 계산 방지)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      calculateBMIValue(height, weight);
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [height, weight]);
+  }, [height, weight, calculateBMIValue]);
+
+  // 슬라이더 변경 핸들러 (즉시 계산)
+  const handleSliderChange = useCallback((type: 'height' | 'weight', value: string) => {
+    if (type === 'height') {
+      setHeight(value);
+    } else {
+      setWeight(value);
+    }
+    // 슬라이더는 즉시 계산
+    const newHeight = type === 'height' ? value : height;
+    const newWeight = type === 'weight' ? value : weight;
+    calculateBMIValue(newHeight, newWeight, true);
+  }, [height, weight, calculateBMIValue]);
 
   const resetForm = () => {
     setHeight('170');
     setWeight('65');
-    setBmi(null);
-    setCategory('');
     setError('');
+    // 초기화 후 BMI 재계산
+    setTimeout(() => {
+      calculateBMIValue('170', '65', true);
+    }, 0);
   };
 
   const getCategoryColor = (categoryName: string) => {
@@ -149,7 +157,8 @@ export default function Home() {
                       max="220"
                       step="0.1"
                       value={height || '170'}
-                      onChange={(e) => setHeight(e.target.value)}
+                      onChange={(e) => handleSliderChange('height', e.target.value)}
+                      onInput={(e) => handleSliderChange('height', (e.target as HTMLInputElement).value)}
                       className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                     />
                     <div className="flex justify-between px-1">
@@ -182,7 +191,8 @@ export default function Home() {
                       max="150"
                       step="0.1"
                       value={weight || '65'}
-                      onChange={(e) => setWeight(e.target.value)}
+                      onChange={(e) => handleSliderChange('weight', e.target.value)}
+                      onInput={(e) => handleSliderChange('weight', (e.target as HTMLInputElement).value)}
                       className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                     />
                     <div className="flex justify-between px-1">
