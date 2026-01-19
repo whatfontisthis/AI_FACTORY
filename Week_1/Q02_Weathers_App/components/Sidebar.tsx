@@ -3,15 +3,25 @@
 import { useState, useEffect } from 'react';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useLocation } from '@/contexts/LocationContext';
-import RegionAutocomplete from './RegionAutocomplete';
+import RegionAutocomplete, { Region } from './RegionAutocomplete';
+
+interface QuickRegion {
+  id: number;
+  name: string;
+  fullName: string;
+  latitude: number;
+  longitude: number;
+}
 
 export default function Sidebar() {
   const [searchValue, setSearchValue] = useState('');
+  const [quickRegions, setQuickRegions] = useState<QuickRegion[]>([]);
   const { location, error, isLoading, getCurrentLocation } = useGeolocation();
   const { setLocation, setCoordinates, selectedLocation, selectedCoordinates } = useLocation();
 
-  const handleRegionSelect = (region: any) => {
+  const handleRegionSelect = (region: Region) => {
     setLocation(region.fullName);
+    setCoordinates({ lat: region.latitude, lon: region.longitude });
     setSearchValue('');
   };
 
@@ -21,14 +31,32 @@ export default function Sidebar() {
     }
   }, [location, setCoordinates]);
 
-  const popularRegions = [
-    { name: '서울', fullName: '서울특별시' },
-    { name: '부산', fullName: '부산광역시' },
-    { name: '제주', fullName: '제주특별자치도' },
-    { name: '강릉', fullName: '강원도 강릉시' },
-    { name: '대구', fullName: '대구광역시' },
-    { name: '인천', fullName: '인천광역시' },
-  ];
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const response = await fetch('/api/regions/list?limit=100');
+        if (!response.ok) throw new Error('Failed to fetch regions');
+
+        const data = await response.json();
+        if (data.success && data.data) {
+          const regions: QuickRegion[] = data.data
+            .map((r: any) => ({
+              id: r.id,
+              name: r.name_ko,
+              fullName: r.display_name,
+              latitude: r.latitude,
+              longitude: r.longitude,
+            }))
+            .sort((a: QuickRegion, b: QuickRegion) => a.name.localeCompare(b.name, 'ko'));
+          setQuickRegions(regions);
+        }
+      } catch (error) {
+        console.error('Failed to fetch regions:', error);
+      }
+    };
+
+    fetchRegions();
+  }, []);
 
   // IP 기반 위치에서 도시명이 있으면 표시
   const currentDisplay = selectedLocation || 
@@ -108,16 +136,31 @@ export default function Sidebar() {
       {/* Quick Picks */}
       <div className="mt-10">
         <h3 className="text-[11px] font-bold text-slate-400 mb-4 uppercase tracking-wider">빠른 선택</h3>
-        <div className="grid grid-cols-3 gap-2">
-          {popularRegions.map((region) => (
-            <button
-              key={region.name}
-              onClick={() => setLocation(region.fullName)}
-              className="px-2 py-2.5 text-xs font-bold bg-white border border-slate-100 text-slate-600 rounded-xl hover:bg-slate-50 hover:border-slate-200 transition-all hover:shadow-sm active:scale-95"
-            >
-              {region.name}
-            </button>
-          ))}
+        <div className="relative">
+          <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto pb-6 scrollbar-thin">
+            {quickRegions.map((region) => (
+              <button
+                key={region.id}
+                onClick={() => {
+                  setLocation(region.fullName);
+                  setCoordinates({ lat: region.latitude, lon: region.longitude });
+                }}
+                className="px-2 py-2.5 text-xs font-bold bg-white border border-slate-100 text-slate-600 rounded-xl hover:bg-slate-50 hover:border-slate-200 transition-all hover:shadow-sm active:scale-95"
+              >
+                {region.name}
+              </button>
+            ))}
+          </div>
+          {quickRegions.length > 9 && (
+            <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none flex items-end justify-center pb-1">
+              <div className="flex items-center gap-1 text-[10px] text-slate-400">
+                <svg className="w-3 h-3 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                <span>스크롤</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
