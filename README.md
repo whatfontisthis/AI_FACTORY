@@ -30,3 +30,12 @@ Week_1/
 ├── [✅] Q01 - 세금계산기 앱
 └── [✅] Q02 - 날씨 앱
 ```
+
+## Week 2 진행상황
+
+```
+Week_2/
+├── [✅] G01 - Fortune Teller (운세 앱)
+├── [✅] Q01 - Character Counter (글자 수 세기)
+└── [✅] Q02 - My Lucky Number (행운의 숫자)
+```
