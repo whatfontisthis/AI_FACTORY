@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>꿈해몽 행운번호 - 로또 6/45</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8b5cf6",
+                        "primary-dark": "#7c3aed",
+                        "background-light": "#0f0a1a",
+                        "panel-grey": "#1a1225",
+                        "dream-gold": "#fbbf24",
+                        "mystic-purple": "#a855f7",
+                        "mystic-blue": "#3b82f6"
+                    },
+                    fontFamily: {
+                        "sans": ["Noto Sans KR", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --glow-color: rgba(139, 92, 246, 0.3);
+        }
+
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #0f0a1a 0%, #1a1033 50%, #0f0a1a 100%);
+            font-size: 18px;
+            min-height: 100vh;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Mystical cursor glow */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 40%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: 9998;
+            transition: opacity 0.3s ease;
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, #fbbf24 0%, #a855f7 100%);
+            box-shadow: 0 0 20px #a855f7, 0 0 40px #8b5cf6, 0 0 60px #7c3aed;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            animation: pulse 2s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        /* Mystical floating particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: #a855f7;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: float-up 3s ease-out forwards;
+        }
+
+        @keyframes float-up {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(0); }
+        }
+
+        .dream-orb {
+            width: 88px;
+            height: 88px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 2rem;
+            color: #7c3aed;
+            background: rgba(30, 20, 50, 0.8);
+            border: 3px dashed #6b21a8;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .dream-orb.selected {
+            color: #fbbf24;
+            border-style: solid;
+            border-color: #a855f7;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.5), 0 0 60px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(251, 191, 36, 0.2);
+            animation: orb-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes orb-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(168, 85, 247, 0.5), 0 0 60px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.7), 0 0 80px rgba(139, 92, 246, 0.5); }
+        }
+
+        .keyword-chip {
+            background: rgba(30, 20, 50, 0.8);
+            border: 2px solid #7c3aed;
+            color: #c4b5fd;
+            padding: 8px 20px;
+            border-radius: 999px;
+            font-size: 1.125rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+        }
+
+        .keyword-chip:hover {
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .details-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        #details-toggle:checked ~ .details-content {
+            max-height: 500px;
+        }
+
+        #details-toggle:checked + label .material-symbols-outlined {
+            transform: rotate(180deg);
+        }
+
+        #analysis-message {
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            line-height: 1.8;
+        }
+
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(26, 18, 37, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.6) 0%, rgba(168, 85, 247, 0.6) 100%);
+            border-radius: 10px;
+            border: 2px solid rgba(26, 18, 37, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.8) 0%, rgba(168, 85, 247, 0.8) 100%);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139, 92, 246, 0.6) rgba(26, 18, 37, 0.5);
+        }
+
+        /* Mystical background stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-background-light min-h-screen selection:bg-primary/20">
+<!-- Mystical background elements -->
+<div class="stars" id="stars"></div>
+<div class="cursor-glow" id="cursor-glow"></div>
+<div class="cursor-dot" id="cursor-dot"></div>
+
+<header class="relative z-10 border-b-2 border-purple-900/50 bg-black/40 backdrop-blur-md sticky top-0">
+<div class="max-w-[1440px] mx-auto px-10 h-24 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<h2 class="text-yellow-400 text-2xl font-bold tracking-wide">행운의 번호</h2>
+</div>
+<nav class="hidden md:flex items-center gap-12">
+<a class="text-purple-400 text-base tracking-wide font-bold hover:text-purple-300 transition-colors" href="#">꿈 해석</a>
+<a class="text-slate-400 text-base tracking-wide font-semibold hover:text-purple-300 transition-colors cursor-pointer" id="guide-link">이용 안내</a>
+</nav>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto flex flex-col lg:flex-row min-h-[calc(100vh-96px)] relative z-10">
+<section class="w-full lg:w-5/12 p-8 lg:p-16 border-r border-purple-900/30 flex flex-col justify-center">
+<div class="mb-12">
+<span class="text-purple-400 text-base tracking-wide mb-4 block font-bold">로또 번호 생성기</span>
+<h1 class="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-200 to-yellow-200 text-4xl lg:text-5xl font-bold tracking-tight mb-6 leading-tight">어떤 꿈을 꾸셨나요?</h1>
+<p class="text-slate-300 text-lg leading-relaxed font-medium">꿈의 내용을 상세히 적어주세요. 전통적인 해몽 방식과 수비학을 결합하여 당신만의 행운의 번호를 추출합니다.</p>
+</div>
+<div class="space-y-6">
+<div class="relative">
+<label class="block text-sm tracking-wide text-purple-300 font-bold mb-3 ml-1" for="dream-input">꿈의 내용을 입력하세요</label>
+<textarea class="w-full rounded-2xl border-2 border-purple-700/50 bg-black/40 p-6 text-lg text-slate-200 placeholder:text-slate-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none shadow-lg backdrop-blur-sm" id="dream-input" placeholder="예: 돼지가 집으로 들어오는 꿈을 꿨어요. 돌아가신 조상님도 웃으면서 바라보고 계셨습니다." rows="8"></textarea>
+</div>
+<button id="analyze-btn" class="w-full py-5 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-lg tracking-wide font-bold hover:from-purple-500 hover:to-blue-500 transition-all rounded-xl shadow-lg shadow-purple-900/50 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-purple-500/30 hover:shadow-xl">
+                꿈 분석하기
+            </button>
+</div>
+<div class="mt-12 pt-8 border-t border-purple-900/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-purple-400 text-2xl">history</span>
+<p class="text-base text-slate-400">최근 분석된 키워드: <span id="recent-keywords" class="text-purple-300 font-semibold">#돼지, #황금, #조상님, #바다</span></p>
+</div>
+</div>
+</section>
+<section class="w-full lg:w-7/12 p-8 lg:p-16 bg-black/20 flex flex-col">
+<div class="flex-grow flex flex-col items-center justify-center">
+<div class="w-full text-center space-y-16">
+<div>
+<h2 class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-purple-300 to-pink-300 text-3xl lg:text-4xl font-bold mb-8">추출된 행운의 번호</h2>
+<div id="keyword-chips" class="flex flex-wrap justify-center gap-4 mb-12">
+<span class="keyword-chip font-serif">돼지</span>
+<span class="keyword-chip font-serif">조상님</span>
+<span class="keyword-chip font-serif">길몽</span>
+</div>
+</div>
+<div id="number-orbs" class="grid grid-cols-3 md:grid-cols-6 gap-6 md:gap-8 justify-items-center">
+<div class="flex flex-col items-center gap-3">
+<div class="dream-orb">?</div>
+<span class="text-sm text-purple-300 tracking-wide font-bold">대기</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="dream-orb">?</div>
+<span class="text-sm text-purple-300 tracking-wide font-bold">대기</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="dream-orb">?</div>
+<span class="text-sm text-purple-300 tracking-wide font-bold">대기</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="dream-orb">?</div>
+<span class="text-sm text-purple-300 tracking-wide font-bold">대기</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="dream-orb">?</div>
+<span class="text-sm text-purple-300 tracking-wide font-bold">대기</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="dream-orb">?</div>
+<span class="text-sm text-purple-300 tracking-wide font-bold">대기</span>
+</div>
+</div>
+<div class="w-full max-w-lg mx-auto space-y-6">
+<input class="hidden" id="details-toggle" type="checkbox"/>
+<div class="details-content">
+<div class="bg-black/40 border-2 border-purple-700/50 rounded-2xl p-8 shadow-lg backdrop-blur-sm">
+<div class="grid grid-cols-2 gap-8 text-left">
+<div class="space-y-2">
+<p class="text-sm text-purple-300 tracking-wide font-bold">번호 합계</p>
+<p id="stat-sum" class="text-2xl text-yellow-300 font-bold">--</p>
+</div>
+<div class="space-y-2">
+<p class="text-sm text-purple-300 tracking-wide font-bold">홀짝 비율</p>
+<p id="stat-ratio" class="text-2xl text-yellow-300 font-bold">--</p>
+</div>
+<div class="space-y-2">
+<p class="text-sm text-purple-300 tracking-wide font-bold">출현 빈도</p>
+<p id="stat-freq" class="text-2xl text-yellow-300 font-bold">--</p>
+</div>
+<div class="space-y-2">
+<p class="text-sm text-purple-300 tracking-wide font-bold">연속성 점수</p>
+<p id="stat-ac" class="text-2xl text-yellow-300 font-bold">--</p>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-purple-700/50">
+<p id="analysis-message" class="text-base text-slate-300 leading-relaxed italic break-words whitespace-normal">"꿈을 입력하고 분석하기 버튼을 눌러주세요."</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+<label class="flex items-center gap-2 cursor-pointer px-6 py-3 border-2 border-purple-600/50 text-purple-300 text-base tracking-wide font-bold hover:bg-purple-600/20 hover:border-purple-500 hover:text-purple-200 transition-all rounded-xl backdrop-blur-sm group" for="details-toggle">
+<span>분석 상세 정보 보기</span>
+<span class="material-symbols-outlined text-xl group-hover:text-yellow-300 transition-all">expand_more</span>
+</label>
+<button id="share-btn" class="px-6 py-3 border-2 border-purple-600/50 text-purple-300 text-base tracking-wide font-bold hover:bg-purple-600/20 hover:border-purple-500 hover:text-purple-200 transition-all rounded-xl disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm" disabled>
+                공유하기
+            </button>
+</div>
+</div>
+<div class="mt-auto pt-6"></div>
+</section>
+</main>
+<!-- 이용 안내 모달 -->
+<div id="guide-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+<div class="bg-gradient-to-br from-background-light to-panel-grey border-2 border-purple-700/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+<div class="sticky top-0 bg-background-light/95 backdrop-blur-md border-b-2 border-purple-700/50 p-6 flex items-center justify-between">
+<h2 class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-300 to-yellow-300 text-2xl font-bold tracking-wide">이용 안내</h2>
+<button id="close-guide-modal" class="text-purple-400 hover:text-yellow-300 transition-colors">
+<span class="material-symbols-outlined text-3xl">close</span>
+</button>
+</div>
+<div class="p-8 space-y-8 text-slate-300">
+<section>
+<h3 class="text-purple-300 text-xl font-bold mb-4 tracking-wide">로또(lotto) 소개</h3>
+<div class="space-y-4 text-base leading-relaxed">
+<p class="font-semibold text-purple-200 mb-2">로또란?</p>
+<p>50개 전후의 숫자 중 6개 전후의 숫자를 구매자가 직접 선택하고 추첨을 통해 결정된 당첨번호와 선택한 번호가 일치하는 개수에 따라 등위를 결정하는 복권게임. 로또에는 6/49, 6/54, 4/40, 7/69 등 다양한 게임 형식이 있으나 국내에서 도입하고 있는 게임은 '로또 6/45'.</p>
+</div>
+</section>
+
+<section>
+<h3 class="text-purple-300 text-xl font-bold mb-4 tracking-wide">로또 구입 안내</h3>
+<ul class="space-y-2 text-base leading-relaxed list-disc list-inside ml-4">
+<li><span class="font-semibold text-purple-200">구입처</span>: (주)동행복권과 판매점 계약을 체결한 전국의 편의점, 복권방 및 가판대 등</li>
+<li><span class="font-semibold text-purple-200">구입가능시간</span>: 매일 6시부터 24시까지 1년 365일 연중무휴</li>
+<li><span class="font-semibold text-purple-200">구입불가시간</span>: 추첨당일(토요일) 오후 8시에 판매 마감, 추첨일 오후 8시부터 다음날(일요일) 오전 6시까지는 판매 정지</li>
+<li>19세 미만의 청소년의 경우 복권 및 복권 기금법에 따라 구매 불가</li>
+</ul>
+</section>
+
+<section>
+<h3 class="text-purple-300 text-xl font-bold mb-4 tracking-wide">당첨금 안내</h3>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse text-sm">
+<thead>
+<tr class="bg-purple-900/30">
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">등위</th>
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">당첨내용</th>
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">당첨확률</th>
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">당첨금 배분 비율</th>
+</tr>
+</thead>
+<tbody>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">1위</td>
+<td class="border border-purple-700/50 p-3">6개 번호 일치</td>
+<td class="border border-purple-700/50 p-3">1 / 8,145,060</td>
+<td class="border border-purple-700/50 p-3">총 당첨금 중 4등과 5등 금액을 제외한 금액의 75%</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">2위</td>
+<td class="border border-purple-700/50 p-3">5개 번호 일치 + 보너스 번호 일치</td>
+<td class="border border-purple-700/50 p-3">1 / 1,357,510</td>
+<td class="border border-purple-700/50 p-3">총 당첨금 중 4등과 5등 금액을 제외한 금액의 12.5%</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">3위</td>
+<td class="border border-purple-700/50 p-3">5개 번호 일치</td>
+<td class="border border-purple-700/50 p-3">1 / 35,724</td>
+<td class="border border-purple-700/50 p-3">총 당첨금 중 4등과 5등 금액을 제외한 금액의 12.5%</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">4위</td>
+<td class="border border-purple-700/50 p-3">4개 번호 일치</td>
+<td class="border border-purple-700/50 p-3">1 / 733</td>
+<td class="border border-purple-700/50 p-3">50,000원</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">5위</td>
+<td class="border border-purple-700/50 p-3">3개 번호 일치</td>
+<td class="border border-purple-700/50 p-3">1 / 45</td>
+<td class="border border-purple-700/50 p-3">5,000원</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="text-sm text-purple-200 mt-4 italic">※ 총 당첨금은 로또 전체 판매액의 50%이며, 42% 이상은 복권기금으로 활용됩니다.</p>
+<ul class="space-y-2 text-sm leading-relaxed list-disc list-inside ml-4 mt-4">
+<li>1,2,3등 당첨금은 해당 회차의 총 판매액에 의해 결정, 등위별 해당금액은 당첨자수로 나누어 지급</li>
+<li>1등 당첨자가 없는 경우에는 해당 1등 당첨금은 이월되어 다음 회차 1등 상금에 합산되고 2등~3등 당첨자가 없는 경우에는 직 상위 당첨금에 포함되어 지급</li>
+<li>1등 당첨금의 연속 이월은 2회로 제한되며 연속 이월 3회째에도 1등 당첨자가 없을 경우 당첨금은 직하위 당첨금에 포함하여 지급 (다만, 이월 횟수는 정부정책에 의거 변경가능)</li>
+<li>4등, 5등 당첨자가 과다하게 발생하여 당첨금이 부족할 경우 별도로 정한 지급률에 의거하여 지급</li>
+</ul>
+</section>
+
+<section>
+<h3 class="text-purple-300 text-xl font-bold mb-4 tracking-wide">당첨금 지급 장소 안내</h3>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse text-sm">
+<thead>
+<tr class="bg-purple-900/30">
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">당첨금</th>
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">지급장소</th>
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">준비물</th>
+</tr>
+</thead>
+<tbody>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">1등</td>
+<td class="border border-purple-700/50 p-3">농협은행 본점</td>
+<td class="border border-purple-700/50 p-3">당첨복권, 신분증</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">2등, 3등</td>
+<td class="border border-purple-700/50 p-3">농협은행 각 지점</td>
+<td class="border border-purple-700/50 p-3">당첨복권, 신분증</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3">4등, 5등</td>
+<td class="border border-purple-700/50 p-3">일반 판매점과 농협은행 각 지점</td>
+<td class="border border-purple-700/50 p-3">당첨복권</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="text-sm text-purple-200 mt-4 italic">※ 로또 복권 지급업무 미처리 영업점 안내 : 기업금융지점, 대기업RM센터</p>
+<p class="text-sm text-purple-200 mt-2 italic">※ 당첨금은 농협은행 영업점에서만 지급받으실 수 있습니다. (지역농협 제외)</p>
+</section>
+
+<section>
+<h3 class="text-purple-300 text-xl font-bold mb-4 tracking-wide">로또 용어 사전</h3>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse text-sm">
+<thead>
+<tr class="bg-purple-900/30">
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200 w-1/3">용어</th>
+<th class="border border-purple-700/50 p-3 text-left font-bold text-purple-200">의미</th>
+</tr>
+</thead>
+<tbody>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">종합(합계)</td>
+<td class="border border-purple-700/50 p-3">당첨번호 6개를 더한 값, 일반적으로 120 ~ 180 사이(ex. 31회의 당첨번호 7+9+18+23+28+35 = 134)</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">홀짝</td>
+<td class="border border-purple-700/50 p-3">당첨번호 중 짝수와 홀수의 갯수</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">뜨거운 수</td>
+<td class="border border-purple-700/50 p-3">최근 5주 / 10주 이내 출현한 수</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">차가운 수</td>
+<td class="border border-purple-700/50 p-3">최근 5주 / 10주 이내 미 출현한 수</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">고저</td>
+<td class="border border-purple-700/50 p-3">45개 번호 중 23을 기준으로 낮은 수 1~22, 높은 수 23~45</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">완전제곱수</td>
+<td class="border border-purple-700/50 p-3">자기 자신을 곱한 수<br/>1*1=1, 2*2=4, 3*3=9, 4*4=16, 5*5=25, 6*6=36</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">3배수</td>
+<td class="border border-purple-700/50 p-3">선택된 6개 숫자 중 3의 배수를 몇개 포함하는가를 나타낸 것<br/>3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">소수</td>
+<td class="border border-purple-700/50 p-3">1과 자신 이외에는 나누어지지 않는 수<br/>2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">합성수</td>
+<td class="border border-purple-700/50 p-3">소수와 3배수를 제외한 수<br/>1, 4, 8, 10, 14, 16, 20, 22, 25, 26, 28, 32, 34, 35, 38, 40, 44</td>
+</tr>
+<tr class="hover:bg-purple-900/20">
+<td class="border border-purple-700/50 p-3 font-semibold text-purple-200">일련번호</td>
+<td class="border border-purple-700/50 p-3">로또 6/45의 완전조합 총 8,145,060개 조합<br/>1번째 조합 [1, 2, 3, 4, 5, 6]을 시작으로 8,145,060번째 조합 [40, 41, 42, 43, 44, 45]까지 번호를 순서대로 정해놓은 것</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+</div>
+
+<footer class="relative z-10 border-t-2 border-purple-900/50 py-12 px-10 bg-black/40 backdrop-blur-sm">
+<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">꿈해몽 행운번호</span>
+</div>
+<p class="text-base text-slate-400 tracking-wide font-medium">© 2026 전통 해몽 및 수비학 연구소</p>
+<div class="flex gap-6">
+<a class="text-purple-400 hover:text-yellow-300 transition-colors" href="#"><span class="material-symbols-outlined text-2xl">share</span></a>
+<a class="text-purple-400 hover:text-yellow-300 transition-colors" href="#"><span class="material-symbols-outlined text-2xl">info</span></a>
+</div>
+</div>
+</footer>
+
+<script>
+// Dream keyword database with associated number ranges and meanings
+const dreamKeywords = {
+    // Animals
+    '돼지': { numbers: [3, 8, 18, 28, 38], meaning: '재물', category: '동물' },
+    '호랑이': { numbers: [4, 14, 24, 34, 44], meaning: '권력', category: '동물' },
+    '용': { numbers: [5, 15, 25, 35, 45], meaning: '성공', category: '동물' },
+    '뱀': { numbers: [6, 16, 26, 36], meaning: '지혜', category: '동물' },
+    '말': { numbers: [7, 17, 27, 37], meaning: '속도', category: '동물' },
+    '소': { numbers: [2, 12, 22, 32, 42], meaning: '근면', category: '동물' },
+    '개': { numbers: [11, 21, 31, 41], meaning: '충성', category: '동물' },
+    '고양이': { numbers: [9, 19, 29, 39], meaning: '직감', category: '동물' },
+    '새': { numbers: [1, 11, 21, 31, 41], meaning: '자유', category: '동물' },
+    '물고기': { numbers: [3, 13, 23, 33, 43], meaning: '풍요', category: '동물' },
+    '거북이': { numbers: [10, 20, 30, 40], meaning: '장수', category: '동물' },
+
+    // People
+    '조상님': { numbers: [1, 14, 21, 33, 41], meaning: '가족', category: '사람' },
+    '할머니': { numbers: [2, 12, 22, 32], meaning: '지혜', category: '사람' },
+    '할아버지': { numbers: [1, 11, 21, 31], meaning: '조언', category: '사람' },
+    '아버지': { numbers: [4, 14, 24, 34], meaning: '보호', category: '사람' },
+    '어머니': { numbers: [2, 12, 22, 32], meaning: '사랑', category: '사람' },
+    '아이': { numbers: [7, 17, 27, 37], meaning: '희망', category: '사람' },
+    '아기': { numbers: [1, 11, 21, 31], meaning: '시작', category: '사람' },
+
+    // Nature
+    '바다': { numbers: [6, 16, 26, 36], meaning: '무한', category: '자연' },
+    '산': { numbers: [5, 15, 25, 35, 45], meaning: '안정', category: '자연' },
+    '강': { numbers: [3, 13, 23, 33, 43], meaning: '흐름', category: '자연' },
+    '하늘': { numbers: [9, 19, 29, 39], meaning: '희망', category: '자연' },
+    '태양': { numbers: [1, 10, 19, 28, 37], meaning: '에너지', category: '자연' },
+    '달': { numbers: [2, 11, 20, 29, 38], meaning: '감성', category: '자연' },
+    '별': { numbers: [7, 17, 27, 37], meaning: '꿈', category: '자연' },
+    '꽃': { numbers: [4, 14, 24, 34, 44], meaning: '아름다움', category: '자연' },
+    '나무': { numbers: [5, 15, 25, 35], meaning: '성장', category: '자연' },
+    '불': { numbers: [3, 13, 23, 33, 43], meaning: '열정', category: '자연' },
+    '물': { numbers: [6, 16, 26, 36], meaning: '정화', category: '자연' },
+    '비': { numbers: [4, 14, 24, 34, 44], meaning: '축복', category: '자연' },
+    '눈': { numbers: [1, 11, 21, 31, 41], meaning: '순수', category: '자연' },
+
+    // Objects
+    '황금': { numbers: [8, 18, 28, 38], meaning: '부', category: '물건' },
+    '금': { numbers: [8, 18, 28, 38], meaning: '재물', category: '물건' },
+    '돈': { numbers: [8, 18, 28, 38], meaning: '재물', category: '물건' },
+    '보석': { numbers: [7, 17, 27, 37], meaning: '가치', category: '물건' },
+    '집': { numbers: [4, 14, 24, 34, 44], meaning: '안정', category: '물건' },
+    '차': { numbers: [9, 19, 29, 39], meaning: '이동', category: '물건' },
+    '열쇠': { numbers: [1, 11, 21, 31, 41], meaning: '기회', category: '물건' },
+    '문': { numbers: [10, 20, 30, 40], meaning: '변화', category: '물건' },
+    '다리': { numbers: [5, 15, 25, 35, 45], meaning: '연결', category: '물건' },
+
+    // Actions/States
+    '날다': { numbers: [9, 19, 29, 39], meaning: '자유', category: '행동' },
+    '떨어지다': { numbers: [4, 14, 24, 34], meaning: '변화', category: '행동' },
+    '죽다': { numbers: [1, 10, 19, 28], meaning: '재생', category: '행동' },
+    '결혼': { numbers: [2, 12, 22, 32, 42], meaning: '결합', category: '행동' },
+    '임신': { numbers: [3, 13, 23, 33, 43], meaning: '창조', category: '행동' },
+    '싸우다': { numbers: [7, 17, 27, 37], meaning: '도전', category: '행동' },
+    '웃다': { numbers: [6, 16, 26, 36], meaning: '행복', category: '행동' },
+    '울다': { numbers: [4, 14, 24, 34], meaning: '정화', category: '행동' },
+
+    // Dream types
+    '길몽': { numbers: [7, 17, 27, 37, 45], meaning: '행운', category: '꿈유형' },
+    '흉몽': { numbers: [4, 14, 24, 34], meaning: '경고', category: '꿈유형' },
+    '태몽': { numbers: [1, 11, 21, 31, 41], meaning: '탄생', category: '꿈유형' }
+};
+
+// Interpretation messages based on dream categories
+const interpretationMessages = [
+    "번영과 혈통의 상징이 정렬되었습니다. 무의식의 경로가 당신의 비전을 통해 이 숫자들을 드러내고 있습니다.",
+    "꿈의 상징들이 조화롭게 어우러져 행운의 기운을 전하고 있습니다.",
+    "고대의 해몽 지혜가 당신의 꿈을 통해 특별한 숫자들을 선사합니다.",
+    "무의식 속 깊은 곳에서 발현된 상징들이 행운의 번호로 변환되었습니다.",
+    "꿈속 이미지들이 수비학적 조합을 통해 당신만의 번호를 만들어냈습니다.",
+    "전통 해몽의 지혜와 현대 수비학이 만나 특별한 조합이 탄생했습니다."
+];
+
+// State
+let currentResult = null;
+
+// DOM Elements
+const dreamInput = document.getElementById('dream-input');
+const analyzeBtn = document.getElementById('analyze-btn');
+const shareBtn = document.getElementById('share-btn');
+const numberOrbs = document.getElementById('number-orbs');
+const keywordChips = document.getElementById('keyword-chips');
+const recentKeywords = document.getElementById('recent-keywords');
+const statSum = document.getElementById('stat-sum');
+const statRatio = document.getElementById('stat-ratio');
+const statFreq = document.getElementById('stat-freq');
+const statAc = document.getElementById('stat-ac');
+const analysisMessage = document.getElementById('analysis-message');
+
+// Extract keywords from dream text
+function extractKeywords(text) {
+    const found = [];
+    for (const keyword in dreamKeywords) {
+        if (text.includes(keyword)) {
+            found.push({
+                keyword: keyword,
+                ...dreamKeywords[keyword]
+            });
+        }
+    }
+    return found;
+}
+
+// Generate lucky numbers based on keywords
+function generateNumbers(keywords) {
+    const numberPool = new Set();
+    const meanings = [];
+
+    // Add numbers from matched keywords
+    keywords.forEach(kw => {
+        kw.numbers.forEach(n => numberPool.add(n));
+        if (!meanings.includes(kw.meaning)) {
+            meanings.push(kw.meaning);
+        }
+    });
+
+    // If not enough numbers, add random ones
+    while (numberPool.size < 20) {
+        numberPool.add(Math.floor(Math.random() * 45) + 1);
+    }
+
+    // Convert to array and shuffle
+    const poolArray = Array.from(numberPool);
+    for (let i = poolArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [poolArray[i], poolArray[j]] = [poolArray[j], poolArray[i]];
+    }
+
+    // Select 6 numbers and sort
+    const selected = poolArray.slice(0, 6).sort((a, b) => a - b);
+
+    // Assign meanings (use extracted or default)
+    const defaultMeanings = ['재물', '가족', '변화', '결실', '운명', '완성'];
+    const finalMeanings = [];
+    for (let i = 0; i < 6; i++) {
+        finalMeanings.push(meanings[i] || defaultMeanings[i]);
+    }
+
+    return { numbers: selected, meanings: finalMeanings };
+}
+
+// Calculate statistics
+function calculateStats(numbers) {
+    const sum = numbers.reduce((a, b) => a + b, 0);
+    const oddCount = numbers.filter(n => n % 2 === 1).length;
+    const evenCount = 6 - oddCount;
+
+    // Calculate AC (Arithmetic Complexity) score
+    const differences = new Set();
+    for (let i = 0; i < numbers.length; i++) {
+        for (let j = i + 1; j < numbers.length; j++) {
+            differences.add(Math.abs(numbers[i] - numbers[j]));
+        }
+    }
+    const ac = differences.size - 5;
+
+    // Frequency assessment based on sum range
+    let freq;
+    if (sum >= 100 && sum <= 170) {
+        freq = '높음';
+    } else if (sum >= 80 && sum <= 190) {
+        freq = '보통';
+    } else {
+        freq = '낮음';
+    }
+
+    return {
+        sum: sum,
+        ratio: `${oddCount}:${evenCount}`,
+        freq: freq,
+        ac: ac.toFixed(1)
+    };
+}
+
+// Update display with results
+function displayResults(keywords, numbers, meanings, stats) {
+    // Update keyword chips
+    if (keywords.length > 0) {
+        keywordChips.innerHTML = keywords.map(kw =>
+            `<span class="keyword-chip font-serif">${kw.keyword}</span>`
+        ).join('');
+    } else {
+        keywordChips.innerHTML = '<span class="keyword-chip font-serif">일반</span>';
+    }
+
+    // Update number orbs with animation
+    const orbContainers = numberOrbs.children;
+    numbers.forEach((num, i) => {
+        const container = orbContainers[i];
+        const orb = container.querySelector('.dream-orb');
+        const label = container.querySelector('span');
+
+        // Add animation delay
+        setTimeout(() => {
+            orb.textContent = num.toString().padStart(2, '0');
+            orb.classList.add('selected');
+            label.textContent = meanings[i];
+        }, i * 100);
+    });
+
+    // Update stats
+    statSum.textContent = stats.sum;
+    statRatio.textContent = stats.ratio;
+    statFreq.textContent = stats.freq;
+    statAc.textContent = stats.ac;
+
+    // Update interpretation message
+    const randomMessage = interpretationMessages[Math.floor(Math.random() * interpretationMessages.length)];
+    analysisMessage.textContent = `"${randomMessage}"`;
+
+    // Update recent keywords
+    if (keywords.length > 0) {
+        recentKeywords.textContent = keywords.map(kw => `#${kw.keyword}`).join(', ');
+    }
+
+    // Enable share button
+    shareBtn.disabled = false;
+}
+
+// Analyze dream
+function analyzeDream() {
+    const text = dreamInput.value.trim();
+
+    if (!text) {
+        alert('꿈의 내용을 입력해주세요.');
+        return;
+    }
+
+    // Extract keywords
+    const keywords = extractKeywords(text);
+
+    // Generate numbers
+    const { numbers, meanings } = generateNumbers(keywords);
+
+    // Calculate stats
+    const stats = calculateStats(numbers);
+
+    // Store current result
+    currentResult = {
+        dream: text,
+        keywords: keywords.map(k => k.keyword),
+        numbers: numbers,
+        meanings: meanings,
+        stats: stats,
+        timestamp: new Date().toISOString()
+    };
+
+    // Display results
+    displayResults(keywords, numbers, meanings, stats);
+}
+
+// Share result
+async function shareResult() {
+    if (!currentResult) return;
+
+    const shareText = `🌙 꿈해몽 행운번호 결과\n\n` +
+        `행운의 번호: ${currentResult.numbers.join(', ')}\n` +
+        `키워드: ${currentResult.keywords.join(', ') || '일반'}\n` +
+        `번호 합계: ${currentResult.stats.sum}\n` +
+        `홀짝 비율: ${currentResult.stats.ratio}`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: '꿈해몽 행운번호 - 분석 결과',
+                text: shareText
+            });
+        } catch (err) {
+            // User cancelled or error
+            copyToClipboard(shareText);
+        }
+    } else {
+        copyToClipboard(shareText);
+    }
+}
+
+// Copy to clipboard fallback
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('결과가 클립보드에 복사되었습니다!');
+    }).catch(() => {
+        alert('공유 기능을 사용할 수 없습니다.');
+    });
+}
+
+// Event listeners
+analyzeBtn.addEventListener('click', analyzeDream);
+shareBtn.addEventListener('click', shareResult);
+
+// Details toggle icon rotation
+const detailsToggle = document.getElementById('details-toggle');
+const detailsLabel = document.querySelector('label[for="details-toggle"]');
+if (detailsToggle && detailsLabel) {
+    detailsToggle.addEventListener('change', () => {
+        const icon = detailsLabel.querySelector('.material-symbols-outlined');
+        if (icon) {
+            icon.style.transform = detailsToggle.checked ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+    });
+}
+
+// Allow Enter key to trigger analysis (with Ctrl/Cmd)
+dreamInput.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        analyzeDream();
+    }
+});
+
+// Mystical cursor effect
+const cursorGlow = document.getElementById('cursor-glow');
+const cursorDot = document.getElementById('cursor-dot');
+
+document.addEventListener('mousemove', (e) => {
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top = e.clientY + 'px';
+    cursorDot.style.left = e.clientX + 'px';
+    cursorDot.style.top = e.clientY + 'px';
+
+    // Create occasional particles
+    if (Math.random() < 0.1) {
+        createParticle(e.clientX, e.clientY);
+    }
+});
+
+function createParticle(x, y) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.background = Math.random() > 0.5 ? '#a855f7' : '#fbbf24';
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 3000);
+}
+
+// Create twinkling stars background
+function createStars() {
+    const starsContainer = document.getElementById('stars');
+    const starCount = 100;
+
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (2 + Math.random() * 2) + 's';
+        starsContainer.appendChild(star);
+    }
+}
+
+createStars();
+
+// Hide cursor glow on touch devices
+if ('ontouchstart' in window) {
+    cursorGlow.style.display = 'none';
+}
+
+// 이용 안내 모달 기능
+const guideLink = document.getElementById('guide-link');
+const guideModal = document.getElementById('guide-modal');
+const closeGuideModal = document.getElementById('close-guide-modal');
+
+if (guideLink && guideModal && closeGuideModal) {
+    guideLink.addEventListener('click', () => {
+        guideModal.classList.remove('hidden');
+        guideModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    });
+
+    closeGuideModal.addEventListener('click', () => {
+        guideModal.classList.add('hidden');
+        guideModal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    });
+
+    // 모달 배경 클릭 시 닫기
+    guideModal.addEventListener('click', (e) => {
+        if (e.target === guideModal) {
+            guideModal.classList.add('hidden');
+            guideModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // ESC 키로 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !guideModal.classList.contains('hidden')) {
+            guideModal.classList.add('hidden');
+            guideModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+</script>
+</body></html>
