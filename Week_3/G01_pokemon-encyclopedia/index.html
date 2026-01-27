@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PokeWiki - The Ultimate Encyclopedia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f4f425",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#222210",
+                        "grass": "#78C850",
+                        "fire": "#F08030",
+                        "water": "#6890F0",
+                        "electric": "#F8D030"
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Spline Sans", sans-serif;
+        }
+        .pokemon-card-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Holographic Effect - Pokemon Trading Card Style */
+        .pokemon-card {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 5 / 7;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease, box-shadow 0.3s ease;
+            will-change: transform;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .pokemon-card {
+            background: linear-gradient(135deg, #1a1a0d 0%, #2d2d18 100%);
+        }
+        
+        /* Holographic shine overlay */
+        .pokemon-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgb(255, 119, 115) 0%,
+                    rgb(255, 237, 95) 10%,
+                    rgb(168, 255, 95) 20%,
+                    rgb(131, 255, 247) 30%,
+                    rgb(120, 148, 255) 40%,
+                    rgb(216, 117, 255) 50%,
+                    rgb(255, 119, 115) 60%
+                );
+            background-size: 300% 300%;
+            background-position: 50% 50%;
+            opacity: 0;
+            mix-blend-mode: color-dodge;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        .pokemon-card:hover::before {
+            opacity: 0.5;
+        }
+        
+        /* Sparkle effect */
+        .pokemon-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+            background-size: 50% 50%, 80% 80%, 60% 60%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 4;
+        }
+        
+        .pokemon-card:hover::after {
+            opacity: 1;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .pokemon-card > * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Type filter active state */
+        .type-filter {
+            opacity: 0.75;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .type-filter::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .type-filter:hover::before {
+            opacity: 1;
+        }
+        
+        .type-filter.active {
+            opacity: 1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateX(4px);
+        }
+        
+        .type-filter.active .w-1\.5 {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+        
+        .type-filter:hover {
+            opacity: 0.95;
+            transform: translateX(2px);
+        }
+        
+        /* Smooth scrollbar */
+        aside::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        aside::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        aside::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 2px;
+        }
+        
+        aside::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.8);
+        }
+        
+        .dark aside::-webkit-scrollbar-thumb {
+            background: rgba(75, 85, 99, 0.5);
+        }
+        
+        .dark aside::-webkit-scrollbar-thumb:hover {
+            background: rgba(75, 85, 99, 0.8);
+        }
+        
+        /* Generation filter styles */
+        .gen-filter {
+            opacity: 0.7;
+        }
+        
+        .gen-filter.active {
+            opacity: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gen-filter:hover {
+            opacity: 0.9;
+        }
+        
+        /* Stat bar animation */
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(200%);
+            }
+        }
+        
+        .shine-effect {
+            animation: shine 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        .stat-bar-container:hover .shine-effect {
+            animation: shine 1s ease-in-out infinite;
+        }
+        
+        /* Card glow on hover */
+        .pokemon-card:hover {
+            box-shadow: 
+                0 0 30px rgba(255, 119, 115, 0.4),
+                0 0 50px rgba(120, 148, 255, 0.3),
+                0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Card image styling */
+        .pokemon-card img {
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        
+        .pokemon-card:hover img {
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2)) brightness(1.1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#181811] dark:text-white min-h-screen">
+<div class="flex">
+<!-- Sidebar Navigation -->
+<aside class="w-64 h-screen sticky top-0 border-r border-gray-200 dark:border-gray-800 bg-gradient-to-b from-white to-gray-50 dark:from-[#1a1a0d] dark:to-[#0d0d06] shadow-lg flex flex-col overflow-hidden">
+<!-- Logo Section -->
+<div class="p-6 border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="bg-gradient-to-br from-primary to-yellow-400 p-2.5 rounded-xl shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-black text-2xl font-bold">capture</span>
+</div>
+<div>
+<h1 class="text-lg font-extrabold tracking-tight leading-tight bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">PokeWiki</h1>
+<p class="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Encyclopedia</p>
+</div>
+</div>
+</div>
+
+<!-- Filters Section -->
+<div class="flex-1 overflow-y-auto p-4 space-y-6">
+
+<!-- Stats Counter -->
+<div class="bg-gradient-to-r from-primary/20 to-yellow-400/20 dark:from-primary/10 dark:to-yellow-400/10 rounded-xl p-3 border border-primary/30">
+<div class="flex items-center justify-between">
+<span class="text-xs font-semibold text-gray-600 dark:text-gray-400">Showing</span>
+<span id="pokemonCount" class="text-lg font-bold text-gray-900 dark:text-white">0</span>
+</div>
+<div class="text-[10px] text-gray-500 dark:text-gray-500 mt-1">Pokémon</div>
+</div>
+
+<!-- Generation Filters -->
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3 px-2">Generation</h2>
+<div class="grid grid-cols-3 gap-1.5">
+<button class="gen-filter active px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600 text-white transition-all hover:scale-105" data-gen="all">All</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="1">Gen I</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="2">Gen II</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="3">Gen III</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="4">Gen IV</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="5">Gen V</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="6">Gen VI</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="7">Gen VII</button>
+<button class="gen-filter px-2 py-2 rounded-lg text-[10px] font-bold bg-gray-600/70 text-white transition-all hover:scale-105" data-gen="8">Gen VIII</button>
+</div>
+</div>
+
+<!-- Sort Options -->
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3 px-2">Sort By</h2>
+<select id="sortSelect" class="w-full px-3 py-2.5 rounded-lg text-xs font-bold bg-gray-600 text-white border-none focus:ring-2 focus:ring-primary transition-all cursor-pointer">
+<option value="id">Pokédex Number</option>
+<option value="name">Name (A-Z)</option>
+<option value="name-desc">Name (Z-A)</option>
+<option value="hp">HP (High to Low)</option>
+<option value="attack">Attack (High to Low)</option>
+<option value="total">Total Stats</option>
+</select>
+</div>
+
+<!-- Type Filters -->
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3 px-2">Filter by Type</h2>
+<div class="flex flex-col gap-1.5">
+<button class="type-filter active flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="all" style="background-color: #68A090; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white shadow-sm"></span>
+<span class="flex-1 text-left">All Types</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="normal" style="background-color: #A8A878; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Normal</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="fire" style="background-color: #F08030; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Fire</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="water" style="background-color: #6890F0; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Water</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="electric" style="background-color: #F8D030; color: black;">
+<span class="w-1.5 h-1.5 rounded-full bg-black/50"></span>
+<span class="flex-1 text-left">Electric</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="grass" style="background-color: #78C850; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Grass</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="ice" style="background-color: #98D8D8; color: black;">
+<span class="w-1.5 h-1.5 rounded-full bg-black/50"></span>
+<span class="flex-1 text-left">Ice</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="fighting" style="background-color: #C03028; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Fighting</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="poison" style="background-color: #A040A0; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Poison</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="ground" style="background-color: #E0C068; color: black;">
+<span class="w-1.5 h-1.5 rounded-full bg-black/50"></span>
+<span class="flex-1 text-left">Ground</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="flying" style="background-color: #A890F0; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Flying</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="psychic" style="background-color: #F85888; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Psychic</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="bug" style="background-color: #A8B820; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Bug</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="rock" style="background-color: #B8A038; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Rock</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="ghost" style="background-color: #705898; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Ghost</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="dragon" style="background-color: #7038F8; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Dragon</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="dark" style="background-color: #705848; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Dark</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="steel" style="background-color: #B8B8D0; color: black;">
+<span class="w-1.5 h-1.5 rounded-full bg-black/50"></span>
+<span class="flex-1 text-left">Steel</span>
+</button>
+<button class="type-filter flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-all" data-type="fairy" style="background-color: #EE99AC; color: white;">
+<span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+<span class="flex-1 text-left">Fairy</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 px-8 py-6 max-w-7xl mx-auto overflow-y-auto h-screen">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between gap-8 mb-8">
+<div class="flex-1 max-w-2xl">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[#8a8a60] group-focus-within:text-black">search</span>
+</div>
+<input id="searchInput" class="block w-full pl-12 pr-4 py-4 bg-white dark:bg-[#2d2d18] border-2 border-transparent focus:border-primary focus:ring-0 rounded-2xl text-lg font-medium shadow-sm transition-all placeholder:text-[#8a8a60]" placeholder="Search for a Pokemon..." type="text" aria-label="Search for Pokemon"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button id="darkModeToggle" class="p-3 rounded-full bg-white dark:bg-[#2d2d18] hover:bg-primary/20 transition-colors shadow-sm" aria-label="Toggle dark mode">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+</header>
+<!-- Pokemon Grid -->
+<section class="mb-12">
+  <div class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-extrabold tracking-tight">Pokémon</h2>
+    <p class="text-[#8a8a60] dark:text-[#a0a070] text-sm">Click a card to view details.</p>
+  </div>
+  <div id="pokemonGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <!-- Filled dynamically from PokéAPI -->
+  </div>
+</section>
+
+<!-- Pokémon Detail Modal -->
+<div id="pokemonModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
+  <div class="bg-white dark:bg-[#1a1a0d] rounded-2xl max-w-xl w-full mx-4 p-6 relative">
+    <button id="modalClose" class="absolute top-3 right-3 rounded-full p-2 hover:bg-black/5 dark:hover:bg-white/10" aria-label="Close details">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div id="modalContent" class="space-y-4">
+      <!-- Filled dynamically -->
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="mt-20 pb-12 border-t border-[#e5e5e0] dark:border-[#333320] pt-12 text-center">
+<div class="flex items-center justify-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary text-3xl">capture</span>
+<span class="text-xl font-extrabold">PokeWiki</span>
+</div>
+<p class="text-[#8a8a60] dark:text-[#a0a070] text-sm">
+Data provided by <a href="https://pokeapi.co/" target="_blank" rel="noopener noreferrer" class="hover:text-primary underline">PokéAPI</a>
+</p>
+</footer>
+<script src="./client.js"></script>
+<script>
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const html = document.documentElement;
+    
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    html.classList.toggle('dark', currentTheme === 'dark');
+    
+    // Update icon based on current theme
+    const updateDarkModeIcon = () => {
+        const icon = darkModeToggle.querySelector('span');
+        if (html.classList.contains('dark')) {
+            icon.textContent = 'light_mode';
+        } else {
+            icon.textContent = 'dark_mode';
+        }
+    };
+    
+    updateDarkModeIcon();
+    
+    darkModeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        const theme = html.classList.contains('dark') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+        updateDarkModeIcon();
+    });
+    
+    // Dynamic Pokédex using PokeAPI client
+    const searchInput = document.getElementById('searchInput');
+    const pokemonGrid = document.getElementById('pokemonGrid');
+    const modal = document.getElementById('pokemonModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalClose = document.getElementById('modalClose');
+
+    let pokemonDataList = [];
+    let currentTypeFilter = 'all';
+    let currentSearchTerm = '';
+    let currentGenFilter = 'all';
+    let currentSort = 'id';
+    let isLoading = false;
+    let hasMoreToLoad = true;
+    let currentOffset = 0;
+    const LOAD_BATCH_SIZE = 50;
+    
+    // Generation ranges (Pokédex numbers)
+    const genRanges = {
+      '1': [1, 151],
+      '2': [152, 251],
+      '3': [252, 386],
+      '4': [387, 493],
+      '5': [494, 649],
+      '6': [650, 721],
+      '7': [722, 809],
+      '8': [810, 905]
+    };
+
+    const createTypeBadge = (typeName) => {
+        const color = PokeAPIClient.getTypeColor(typeName);
+        return `<span class="px-3 py-1 rounded-full text-xs font-bold text-white" style="background-color:${color}">${typeName}</span>`;
+    };
+
+    const addHolographicTilt = (card) => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * 15;
+            const rotateY = ((x - centerX) / centerX) * -15;
+            
+            const bgPosX = ((x / rect.width) * 100);
+            const bgPosY = ((y / rect.height) * 100);
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+            
+            const holoOverlay = card.querySelector('::before');
+            if (card.style.setProperty) {
+                card.style.setProperty('--x', `${bgPosX}%`);
+                card.style.setProperty('--y', `${bgPosY}%`);
+            }
+            
+            // Update the background position of the ::before pseudo-element
+            const beforeStyle = window.getComputedStyle(card, '::before');
+            if (beforeStyle) {
+                card.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
+            }
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            card.style.backgroundPosition = '50% 50%';
+        });
+    };
+
+    const renderPokemonCards = (list) => {
+        pokemonGrid.innerHTML = list.map((pokemon) => {
+            const id = pokemon.id;
+            const name = PokeAPIClient.formatPokemonName(pokemon.name);
+            const sprite = PokeAPIClient.getOfficialArtworkUrl(id);
+            const types = pokemon.types.map((t) => t.type.name);
+
+            return `
+            <button
+              class="pokemon-card group relative rounded-xl border border-gray-200/50 dark:border-gray-700/50 p-3 text-left w-full cursor-pointer"
+              data-id="${id}"
+            >
+              <div class="flex flex-col h-full">
+                <div class="flex justify-between items-start mb-1">
+                  <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-full backdrop-blur-sm">#${String(id).padStart(3, '0')}</span>
+                </div>
+                <div class="flex-1 flex items-center justify-center mb-2 py-2">
+                  <img
+                    src="${sprite}"
+                    alt="${name} official artwork"
+                    class="w-full h-auto max-h-32 object-contain"
+                  />
+                </div>
+                <div class="text-center space-y-1.5">
+                  <h4 class="text-sm font-bold leading-tight px-1">${name}</h4>
+                  <div class="flex flex-wrap gap-1 justify-center">
+                    ${types.map(t => `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style="background-color:${PokeAPIClient.getTypeColor(t)}">${t}</span>`).join('')}
+                  </div>
+                </div>
+              </div>
+            </button>
+          `;
+        }).join('');
+        
+        // Add holographic tilt effect to all cards
+        const cards = pokemonGrid.querySelectorAll('.pokemon-card');
+        cards.forEach(addHolographicTilt);
+    };
+
+    const openModal = (pokemon) => {
+        const name = PokeAPIClient.formatPokemonName(pokemon.name);
+        const id = pokemon.id;
+        const sprite = PokeAPIClient.getOfficialArtworkUrl(id);
+        const types = pokemon.types.map((t) => t.type.name);
+        const stats = pokemon.stats;
+
+        modalContent.innerHTML = `
+          <div class="flex flex-col sm:flex-row gap-6">
+            <div class="flex-1 flex flex-col items-center text-center">
+              <img
+                src="${sprite}"
+                alt="${name} official artwork"
+                class="w-40 h-40 object-contain mb-4"
+              />
+              <div>
+                <p class="text-xs font-mono text-[#8a8a60] mb-1">#${String(id).padStart(3, '0')}</p>
+                <h3 class="text-3xl font-extrabold mb-2">${name}</h3>
+                <div class="flex flex-wrap gap-2 justify-center">
+                  ${types.map(createTypeBadge).join('')}
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-4">
+              <div>
+                <h4 class="font-bold mb-3 text-sm tracking-wide uppercase text-[#8a8a60]">Base Stats</h4>
+                <div class="space-y-3">
+                  ${stats.map((s) => {
+                    const statColor = s.base_stat >= 100 ? '#78C850' : s.base_stat >= 70 ? '#F8D030' : '#F08030';
+                    const statPercent = Math.min((s.base_stat / 150) * 100, 100);
+                    return `
+                    <div class="stat-bar-container">
+                      <div class="flex justify-between text-xs mb-1.5">
+                        <span class="font-semibold text-gray-700 dark:text-gray-300">${s.stat.name.replace('-', ' ').toUpperCase()}</span>
+                        <span class="font-bold" style="color: ${statColor};">${s.base_stat}</span>
+                      </div>
+                      <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden relative">
+                        <div class="stat-bar h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%; background: linear-gradient(90deg, ${statColor}, ${statColor}dd);" data-width="${statPercent}%"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent shine-effect"></div>
+                      </div>
+                    </div>
+                  `;
+                  }).join('')}
+                  <div class="pt-2 border-t border-gray-200 dark:border-gray-700 mt-3">
+                    <div class="flex justify-between text-xs font-bold">
+                      <span class="text-gray-600 dark:text-gray-400">TOTAL</span>
+                      <span class="text-primary">${stats.reduce((sum, s) => sum + s.base_stat, 0)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        // Animate stat bars
+        setTimeout(() => {
+          const statBars = modal.querySelectorAll('.stat-bar');
+          statBars.forEach((bar, index) => {
+            setTimeout(() => {
+              bar.style.width = bar.dataset.width;
+            }, index * 100);
+          });
+        }, 100);
+      };
+
+      const closeModal = () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      };
+
+      modalClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+          closeModal();
+        }
+      });
+
+      const loadInitialPokemon = async () => {
+        try {
+          // Show loading message
+          pokemonGrid.innerHTML = '<div class="col-span-full text-center py-12"><div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div><p class="mt-4 text-gray-600 dark:text-gray-400">Loading Pokémon...</p></div>';
+          
+          // Load first batch
+          await loadMorePokemon();
+
+          pokemonGrid.addEventListener('click', (e) => {
+            const card = e.target.closest('.pokemon-card');
+            if (!card) return;
+            const id = Number(card.dataset.id);
+            const pokemon = pokemonDataList.find((p) => p.id === id);
+            if (pokemon) openModal(pokemon);
+          });
+        } catch (error) {
+          console.error('Failed to load Pokémon:', error);
+          pokemonGrid.innerHTML = '<p class="text-red-500 col-span-full text-center">Failed to load Pokémon. Please try again later.</p>';
+        }
+      };
+      
+      const loadMorePokemon = async () => {
+        if (isLoading || !hasMoreToLoad) return;
+        
+        isLoading = true;
+        
+        try {
+          const list = await PokeAPIClient.getPokemonList(LOAD_BATCH_SIZE, currentOffset);
+          
+          if (list.results.length === 0) {
+            hasMoreToLoad = false;
+            return;
+          }
+          
+          const details = await Promise.all(
+            list.results.map((p) => PokeAPIClient.getPokemon(p.name))
+          );
+          
+          pokemonDataList = [...pokemonDataList, ...details];
+          currentOffset += LOAD_BATCH_SIZE;
+          
+          // Check if we've loaded all Pokemon
+          if (!list.next) {
+            hasMoreToLoad = false;
+          }
+          
+          // Update display
+          filterPokemon();
+        } catch (error) {
+          console.error('Failed to load Pokémon:', error);
+        } finally {
+          isLoading = false;
+        }
+      };
+      
+      // Infinite scroll implementation
+      const setupInfiniteScroll = () => {
+        const mainContent = document.querySelector('main');
+        
+        mainContent.addEventListener('scroll', () => {
+          const scrollTop = mainContent.scrollTop;
+          const scrollHeight = mainContent.scrollHeight;
+          const clientHeight = mainContent.clientHeight;
+          
+          // Load more when user scrolls to bottom 300px
+          if (scrollTop + clientHeight >= scrollHeight - 300 && !isLoading && hasMoreToLoad) {
+            loadMorePokemon();
+          }
+        });
+      };
+
+      // Filter and sort function
+      const filterPokemon = () => {
+        let filtered = pokemonDataList;
+        
+        // Apply generation filter
+        if (currentGenFilter !== 'all') {
+          const [min, max] = genRanges[currentGenFilter];
+          filtered = filtered.filter((p) => p.id >= min && p.id <= max);
+        }
+        
+        // Apply type filter
+        if (currentTypeFilter !== 'all') {
+          filtered = filtered.filter((p) => {
+            return p.types.some((t) => t.type.name.toLowerCase() === currentTypeFilter);
+          });
+        }
+        
+        // Apply search filter
+        if (currentSearchTerm) {
+          filtered = filtered.filter((p) => {
+            const name = p.name.toLowerCase();
+            const types = p.types.map((t) => t.type.name.toLowerCase()).join(',');
+            return name.includes(currentSearchTerm) || types.includes(currentSearchTerm);
+          });
+        }
+        
+        // Apply sorting
+        filtered = [...filtered].sort((a, b) => {
+          switch(currentSort) {
+            case 'name':
+              return a.name.localeCompare(b.name);
+            case 'name-desc':
+              return b.name.localeCompare(a.name);
+            case 'hp':
+              return b.stats[0].base_stat - a.stats[0].base_stat;
+            case 'attack':
+              return b.stats[1].base_stat - a.stats[1].base_stat;
+            case 'total':
+              const totalA = a.stats.reduce((sum, s) => sum + s.base_stat, 0);
+              const totalB = b.stats.reduce((sum, s) => sum + s.base_stat, 0);
+              return totalB - totalA;
+            case 'id':
+            default:
+              return a.id - b.id;
+          }
+        });
+        
+        // Update counter
+        document.getElementById('pokemonCount').textContent = filtered.length;
+        
+        renderPokemonCards(filtered);
+        
+        // Add loading indicator if more to load
+        if (hasMoreToLoad && currentTypeFilter === 'all' && currentGenFilter === 'all' && !currentSearchTerm) {
+          const loadingIndicator = document.createElement('div');
+          loadingIndicator.className = 'col-span-full text-center py-8';
+          loadingIndicator.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400">Scroll down to load more...</div>';
+          pokemonGrid.appendChild(loadingIndicator);
+        }
+      };
+      
+      // Search filter
+      searchInput.addEventListener('input', (e) => {
+        currentSearchTerm = e.target.value.toLowerCase().trim();
+        filterPokemon();
+      });
+      
+      // Generation filter buttons
+      const genFilterButtons = document.querySelectorAll('.gen-filter');
+      genFilterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          genFilterButtons.forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.opacity = '0.7';
+          });
+          button.classList.add('active');
+          button.style.opacity = '1';
+          currentGenFilter = button.dataset.gen;
+          filterPokemon();
+        });
+      });
+      
+      // Type filter buttons
+      const typeFilterButtons = document.querySelectorAll('.type-filter');
+      typeFilterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons
+          typeFilterButtons.forEach(btn => {
+            btn.classList.remove('active');
+            const dot = btn.querySelector('.w-1\\.5');
+            if (dot) {
+              dot.classList.remove('bg-white', 'bg-black');
+              if (btn.dataset.type === 'electric' || btn.dataset.type === 'ice' || btn.dataset.type === 'ground' || btn.dataset.type === 'steel') {
+                dot.classList.add('bg-black/50');
+              } else {
+                dot.classList.add('bg-white/50');
+              }
+            }
+          });
+          
+          // Add active class to clicked button
+          button.classList.add('active');
+          const activeDot = button.querySelector('.w-1\\.5');
+          if (activeDot) {
+            activeDot.classList.remove('bg-white/50', 'bg-black/50');
+            if (button.dataset.type === 'electric' || button.dataset.type === 'ice' || button.dataset.type === 'ground' || button.dataset.type === 'steel') {
+              activeDot.classList.add('bg-black');
+            } else {
+              activeDot.classList.add('bg-white');
+            }
+          }
+          
+          // Update filter and re-render
+          currentTypeFilter = button.dataset.type;
+          filterPokemon();
+        });
+      });
+      
+      // Sort select
+      const sortSelect = document.getElementById('sortSelect');
+      sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        filterPokemon();
+      });
+
+      setupInfiniteScroll();
+      loadInitialPokemon();
+</script>
+</main>
+</div>
+</body></html>

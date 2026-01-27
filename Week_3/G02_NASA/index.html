@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Astronomy Picture of the Day</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #e0e0e0;
+            --accent-color: #3498db;
+            --card-bg: #1a1a1a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+        }
+
+        main {
+            max-width: 900px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        #content-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+
+        #media-container {
+            width: 100%;
+            line-height: 0;
+            background-color: #000;
+        }
+
+        #media-container img, #media-container iframe {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: none;
+        }
+
+        #media-container iframe {
+            aspect-ratio: 16 / 9;
+        }
+
+        .info-section {
+            padding: 2rem;
+        }
+
+        #title {
+            margin-top: 0;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        #date {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        #explanation {
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .loader {
+            border: 3px solid #333;
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 100px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 2rem;
+            font-size: 0.8rem;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>NASA Image of the Day</h1>
+    </header>
+
+    <main id="app">
+        <div id="loading" class="loader"></div>
+        <div id="content" style="display: none;">
+            <div id="content-card">
+                <div id="media-container"></div>
+                <div class="info-section">
+                    <div id="date"></div>
+                    <h2 id="title"></h2>
+                    <p id="explanation"></p>
+                </div>
+            </div>
+        </div>
+        <div id="error-message" class="error" style="display: none;"></div>
+    </main>
+
+    <footer>
+        Data provided by NASA API
+    </footer>
+
+    <script src="client.js"></script>
+</body>
+</html>
