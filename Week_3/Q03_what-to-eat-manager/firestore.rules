@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // menus 컬렉션은 모든 사용자가 읽을 수 있도록 허용
+    match /menus/{menuId} {
+      allow read: if true;
+      allow write: if false; // 쓰기는 서버에서만 (seed 스크립트)
+    }
+  }
+}

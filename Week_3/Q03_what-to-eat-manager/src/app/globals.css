@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* 커스텀 테마 설정 (Tailwind CSS v4 방식) */
+@theme {
+  /* 프로젝트 커스텀 컬러 */
+  --color-primary: #3b82f6;
+  --color-secondary: #64748b;
+  --color-accent: #f59e0b;
+
+  /* 기분별 컬러 */
+  --color-mood-stress: #ef4444;
+  --color-mood-tired: #8b5cf6;
+  --color-mood-happy: #22c55e;
+  --color-mood-sad: #6366f1;
+  --color-mood-normal: #64748b;
+
+  /* 애니메이션 */
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.3s ease-out;
+  --animate-bounce-light: bounce-light 0.5s ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce-light {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* 기본 스타일 */
+body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}

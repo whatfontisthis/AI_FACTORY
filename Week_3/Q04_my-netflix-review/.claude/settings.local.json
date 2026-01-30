@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(ping:*)",
+      "Bash(ipconfig:*)",
+      "Bash(npm install:*)",
+      "Bash(vercel env add:*)"
+    ]
+  }
+}

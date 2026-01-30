@@ -7,7 +7,8 @@
       "Bash(conda config:*)",
       "Bash(dir:*)",
       "Bash(tree:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(git -C \"C:\\\\dev\\\\AI_FACTORY\" status)"
     ]
   }
 }
