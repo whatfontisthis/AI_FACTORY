@@ -39,3 +39,23 @@ Week_2/
 ├── [✅] Q01 - Character Counter (글자 수 세기)
 └── [✅] Q02 - My Lucky Number (행운의 숫자)
 ```
+
+## Week 3 진행상황
+
+```
+Week_3/
+├── [✅] G01 - Pokemon Encyclopedia
+├── [✅] G02 - NASA
+├── [✅] Q01 - Chatting App
+├── [✅] Q02 - Blog Platform
+├── [✅] Q03 - What To Eat
+└── [✅] Q04 - My Netflix Review
+```
+
+## Week 3 진행상황
+
+```
+Week_3/
+├── [✅] Q01 - Intelligent Chat (Claude API 기반 스마트 챗봇)
+└── [✅] Q02 - Blog Platform (Next.js + PostgreSQL 블로그 시스템)
+```
