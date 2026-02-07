@@ -1,0 +1,73 @@
+Week 3 퀘스트 정리
+============
+
+Q01 - Chatting App
+------------------
+
+기술 스택
+  • Next.js 16, TypeScript, Tailwind CSS
+  • Gemini AI (Vercel AI SDK)
+  • Supabase (PostgreSQL)
+
+앱 설명
+  • Gemini AI와 실시간 스트리밍 채팅 앱. 
+  • 사용자 메시지와 AI 응답이 Supabase에 저장됩니다.
+  • 대화 로그도 저장됩니다.
+
+배포 URL
+  • Vercel 배포 완료: https://q1-sandy.vercel.app/
+  • 환경 변수: GOOGLE_GENERATIVE_AI_API_KEY, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+
+Q02 - Blog
+----------
+
+기술 스택
+  • Next.js 16, TypeScript, Tailwind CSS
+  • Supabase (PostgreSQL) - 클라우드 DB 사용
+  • JWT 인증, bcrypt 비밀번호 해싱
+
+앱 설명
+  • 사용자 인증과 역할 기반 접근 제어를 갖춘 블로그 플랫폼. 
+  • JWT 기반 로그인/로그아웃, 이메일 기반 회원가입 가능 (확인 이메일 X)
+  • 역할별 권한 관리 (Admin, Author, Visitor).
+
+배포 URL
+  • Vercel 배포 완료: https://q2-alpha.vercel.app/
+  • 환경 변수: DATABASE_URL, JWT_SECRET
+
+
+Q03 - What to Eat (오늘 뭐 먹지)
+--------------------------------
+
+기술 스택
+  • Next.js 16, TypeScript, Tailwind CSS
+  • Firebase Firestore (메뉴 데이터 + 이미지)
+  • OpenWeatherMap API
+
+앱 설명
+  • 날씨와 기분을 분석하여 메뉴를 추천하는 앱. 
+  • Geolocation API로 현재 위치의 날씨를 가져오고, 3가지 기분 이모지 선택에 따라 음식을 추천합니다. 
+  • 가중치 알고리즘 사용 (기분 60%, 날씨 40%).
+
+배포 URL
+  • Vercel 배포 완료: https://q3-eta.vercel.app/
+  • 환경 변수: Firebase config, OPENWEATHER_API_KEY
+
+
+Q04 - My Netflix Review (CineLog)
+----------------------------------
+
+기술 스택
+  • Next.js 16, TypeScript, Tailwind CSS
+  • Firebase Firestore (MongoDB → Firebase로 변경)
+  • TMDB API (영화 메타 정보)
+  • shadcn/ui
+
+앱 설명
+  • TMDB API를 활용한 개인 영화 리뷰 아카이브. 영화 검색, 별점(1-5점) 작성
+  • 시청일 기록, 대시보드, 필터링 기능을 제공합니다.
+
+배포 URL
+  • Vercel 배포 완료: https://q4-ivory.vercel.app/
+  • 환경 변수: TMDB_API_KEY, Firebase Admin SDK config
