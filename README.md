@@ -61,5 +61,6 @@ Week_3/
 ```
 Week_4/
 ├── [✅] Q01 - Todo with DB & Sign-in
-└── [✅] Q02 - Mac Store (Online Shopping Mall)
+├── [✅] Q02 - Mac Store (Online Shopping Mall)
+└── [✅] Q03 - Carrot (Local Marketplace)
 ```
