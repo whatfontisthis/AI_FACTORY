@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Notes</title>
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f59e0b'/><rect x='20' y='15' width='60' height='70' fill='white' rx='4'/><line x1='30' y1='35' x2='70' y2='35' stroke='%23f59e0b' stroke-width='3'/><line x1='30' y1='50' x2='70' y2='50' stroke='%23f59e0b' stroke-width='3'/><line x1='30' y1='65' x2='70' y2='65' stroke='%23f59e0b' stroke-width='3'/></svg>"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                    "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+                background: #f2f1f6;
+                min-height: 100vh;
+                padding: 20px;
+                transition: background-color 0.3s ease;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            * {
+                transition: background-color 0.2s ease, color 0.2s ease,
+                    border-color 0.2s ease, opacity 0.2s ease,
+                    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            input,
+            button,
+            .todo-item {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .container {
+                max-width: 680px;
+                margin: 0 auto;
+            }
+
+            .hidden {
+                display: none !important;
+            }
+
+            /* ===== Login Screen ===== */
+            .login-container {
+                max-width: 400px;
+                margin: 80px auto;
+            }
+
+            .login-card {
+                background: #fffef8;
+                border-radius: 16px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08),
+                    0 8px 24px rgba(0, 0, 0, 0.04);
+                overflow: hidden;
+            }
+
+            .login-header {
+                background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+                padding: 32px 24px;
+                text-align: center;
+                border-bottom: 1px solid #e5d9a8;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+                font-weight: 600;
+                color: #78716c;
+                letter-spacing: -0.3px;
+            }
+
+            .login-header p {
+                font-size: 14px;
+                color: #a8a29e;
+                margin-top: 4px;
+            }
+
+            .login-form {
+                padding: 24px;
+            }
+
+            .form-toggle {
+                text-align: center;
+                margin-top: 16px;
+                padding-top: 16px;
+                border-top: 1px solid #e5e5e5;
+                font-size: 14px;
+                color: #78716c;
+                letter-spacing: -0.1px;
+            }
+
+            .form-toggle button {
+                background: none;
+                border: none;
+                color: #f59e0b;
+                font-weight: 500;
+                cursor: pointer;
+                padding: 0;
+                text-decoration: underline;
+                letter-spacing: -0.1px;
+            }
+
+            .form-toggle button:hover {
+                color: #d97706;
+            }
+
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            .form-group label {
+                display: block;
+                font-size: 13px;
+                font-weight: 500;
+                color: #78716c;
+                margin-bottom: 6px;
+                letter-spacing: -0.1px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid #e5e5e5;
+                border-radius: 10px;
+                font-size: 16px;
+                font-family: inherit;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                background: #fafaf9;
+            }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: #f59e0b;
+                background: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+            }
+
+            .login-btn {
+                width: 100%;
+                padding: 14px;
+                background: #f59e0b;
+                border: none;
+                border-radius: 10px;
+                color: white;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                margin-top: 8px;
+                box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+                letter-spacing: -0.2px;
+            }
+
+            .login-btn:hover {
+                background: #d97706;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            }
+
+            .login-btn:active {
+                transform: translateY(0) scale(0.98);
+                box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
+            }
+
+            .login-error {
+                background: #fef2f2;
+                color: #dc2626;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                margin-bottom: 16px;
+                text-align: center;
+            }
+
+            /* ===== Header ===== */
+            .header {
+                background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+                border-radius: 12px 12px 0 0;
+                padding: 20px 24px;
+                border-bottom: 1px solid #e5d9a8;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+
+            .header-left h1 {
+                font-size: 28px;
+                font-weight: 600;
+                color: #78716c;
+                letter-spacing: -0.6px;
+            }
+
+            .header-left .date {
+                font-size: 13px;
+                color: #a8a29e;
+                margin-top: 4px;
+            }
+
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .user-info {
+                font-size: 13px;
+                color: #78716c;
+            }
+
+            .logout-btn {
+                padding: 6px 12px;
+                background: rgba(0, 0, 0, 0.05);
+                border: none;
+                border-radius: 6px;
+                color: #78716c;
+                font-size: 13px;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .logout-btn:hover {
+                background: rgba(0, 0, 0, 0.1);
+                transform: translateY(-1px);
+            }
+
+            .logout-btn:active {
+                transform: translateY(0) scale(0.98);
+            }
+
+            /* ===== Note body ===== */
+            .note-body {
+                background: #fffef8;
+                border-radius: 0 0 12px 12px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08),
+                    0 8px 24px rgba(0, 0, 0, 0.04);
+                overflow: hidden;
+            }
+
+            /* Input area */
+            .input-area {
+                padding: 16px 20px;
+                border-bottom: 1px solid #f0ede4;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .input-area input {
+                flex: 1;
+                border: none;
+                background: transparent;
+                font-size: 17px;
+                color: #1c1c1e;
+                outline: none;
+                font-family: inherit;
+                transition: transform 0.2s ease;
+            }
+
+            .input-area input:focus {
+                transform: scale(1.01);
+            }
+
+            .input-area input::placeholder {
+                color: #c7c7cc;
+                transition: color 0.2s ease;
+            }
+
+            .add-btn {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: none;
+                background: #f59e0b;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                flex-shrink: 0;
+                box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+            }
+
+            .add-btn:hover {
+                background: #d97706;
+                transform: scale(1.1) rotate(90deg);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            }
+
+            .add-btn:active {
+                transform: scale(0.95) rotate(90deg);
+                box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+            }
+
+            /* Error message */
+            .error-message {
+                padding: 12px 20px;
+                background: #fef2f2;
+                color: #dc2626;
+                font-size: 14px;
+                border-bottom: 1px solid #fecaca;
+            }
+
+            /* Todo list */
+            .todo-list {
+                list-style: none;
+                padding: 0;
+            }
+
+            .todo-item {
+                display: flex;
+                align-items: flex-start;
+                padding: 14px 20px;
+                border-bottom: 1px solid #f0ede4;
+                gap: 14px;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+            }
+
+            .todo-item:last-child {
+                border-bottom: none;
+            }
+
+            .todo-item:hover {
+                background: #fdfcf7;
+                transform: translateX(4px);
+                box-shadow: -4px 0 0 #f59e0b;
+            }
+
+            .todo-item.completed {
+                opacity: 0.5;
+                transition: all 0.4s ease;
+            }
+
+            /* Custom checkbox */
+            .checkbox-wrapper {
+                position: relative;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            .checkbox-wrapper input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+                width: 22px;
+                height: 22px;
+            }
+
+            .checkmark {
+                width: 22px;
+                height: 22px;
+                border: 2px solid #d1d5db;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .checkbox-wrapper input:checked + .checkmark {
+                background: #f59e0b;
+                border-color: #f59e0b;
+                transform: rotate(360deg) scale(1.1);
+            }
+
+            .checkmark svg {
+                width: 12px;
+                height: 12px;
+                stroke: white;
+                stroke-width: 3;
+                fill: none;
+                opacity: 0;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transform: scale(0);
+            }
+
+            .checkbox-wrapper input:checked + .checkmark svg {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            .checkbox-wrapper:hover .checkmark {
+                border-color: #f59e0b;
+                transform: scale(1.1);
+            }
+
+            /* Todo text */
+            .todo-text {
+                flex: 1;
+                font-size: 17px;
+                color: #1c1c1e;
+                line-height: 1.4;
+                word-break: break-word;
+                letter-spacing: -0.2px;
+            }
+
+            .todo-item.completed .todo-text {
+                text-decoration: line-through;
+                color: #8e8e93;
+                transition: all 0.4s ease;
+            }
+
+            /* Delete button */
+            .delete-btn {
+                opacity: 0;
+                border: none;
+                background: none;
+                color: #ef4444;
+                cursor: pointer;
+                padding: 4px 8px;
+                font-size: 14px;
+                border-radius: 6px;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                flex-shrink: 0;
+                transform: translateX(10px);
+            }
+
+            .todo-item:hover .delete-btn {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .delete-btn:hover {
+                background: #fef2f2;
+                transform: scale(1.1);
+            }
+
+            .delete-btn:active {
+                transform: scale(0.95);
+            }
+
+            /* Empty state */
+            .empty-state {
+                padding: 60px 20px;
+                text-align: center;
+                color: #a8a29e;
+                font-size: 17px;
+            }
+
+            /* Counter */
+            .counter {
+                padding: 12px 20px;
+                background: #faf9f5;
+                border-top: 1px solid #f0ede4;
+                font-size: 13px;
+                color: #a8a29e;
+                text-align: center;
+            }
+
+            /* Animations */
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px) scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: scale(0.98);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes slideInFromLeft {
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            .todo-item {
+                animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .login-container,
+            .app-container {
+                animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .login-card,
+            .note-body {
+                animation: slideInFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Login Screen -->
+        <div class="login-container" id="loginContainer">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1 id="formTitle">Notes</h1>
+                    <p id="formSubtitle">Sign in to manage your notes</p>
+                </div>
+                <form class="login-form" id="loginForm">
+                    <div id="loginError"></div>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder=""
+                            autocomplete="username"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder=""
+                            autocomplete="current-password"
+                            required
+                        />
+                    </div>
+                    <button type="submit" class="login-btn" id="submitBtn">Sign In</button>
+                    <div class="form-toggle">
+                        <span id="toggleText">Don't have an account?</span>
+                        <button type="button" id="toggleFormBtn">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- App Screen -->
+        <div class="container app-container hidden" id="appContainer">
+            <div class="header">
+                <div class="header-left">
+                    <h1>My Notes</h1>
+                    <div class="date" id="currentDate"></div>
+                </div>
+                <div class="header-right">
+                    <span class="user-info" id="userInfo"></span>
+                    <button class="logout-btn" id="logoutBtn">Sign Out</button>
+                </div>
+            </div>
+
+            <div class="note-body">
+                <div id="errorContainer"></div>
+
+                <div class="input-area">
+                    <input
+                        type="text"
+                        id="todoInput"
+                        placeholder="Add a new note..."
+                        autocomplete="off"
+                    />
+                    <button class="add-btn" id="addBtn">+</button>
+                </div>
+
+                <ul class="todo-list" id="todoList"></ul>
+
+                <div class="counter" id="counter"></div>
+            </div>
+        </div>
+
+        <script src="client.js"></script>
+    </body>
+</html>

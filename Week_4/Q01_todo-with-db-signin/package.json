@@ -1,0 +1,19 @@
+{
+  "name": "week4-todo-with-vercel",
+  "version": "1.0.0",
+  "description": "Todo app with Supabase PostgreSQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "init-db": "node init-db.js"
+  },
+  "keywords": ["todo", "express", "postgresql", "supabase"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "dotenv": "^16.3.1"
+  }
+}

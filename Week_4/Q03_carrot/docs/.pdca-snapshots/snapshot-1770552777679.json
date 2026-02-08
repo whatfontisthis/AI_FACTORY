@@ -1,0 +1,131 @@
+{
+  "timestamp": "2026-02-08T12:12:57.678Z",
+  "reason": "compaction",
+  "status": {
+    "version": "2.0",
+    "lastUpdated": "2026-02-08T12:12:49.407Z",
+    "activeFeatures": [
+      "carrot",
+      "api"
+    ],
+    "primaryFeature": "carrot",
+    "features": {
+      "carrot": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-08T11:50:23.831Z",
+          "lastUpdated": "2026-02-08T12:12:49.407Z"
+        },
+        "lastFile": "c:\\Users\\user\\Downloads\\carrot\\pages\\ChatRoomPage.js"
+      },
+      "api": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-08T11:53:48.926Z",
+          "lastUpdated": "2026-02-08T11:53:48.926Z"
+        },
+        "lastFile": "c:\\Users\\user\\Downloads\\carrot\\api\\server.js"
+      }
+    },
+    "pipeline": {
+      "currentPhase": 1,
+      "level": "Dynamic",
+      "phaseHistory": []
+    },
+    "session": {
+      "startedAt": "2026-02-08T11:50:23.831Z",
+      "onboardingCompleted": false,
+      "lastActivity": "2026-02-08T12:12:49.407Z"
+    },
+    "history": [
+      {
+        "timestamp": "2026-02-08T11:50:23.831Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T11:53:04.188Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T11:53:10.379Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T11:53:31.422Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T11:53:48.926Z",
+        "feature": "api",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:05:57.432Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:08:02.490Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:08:16.813Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:08:27.453Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:09:31.968Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:12:29.632Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:12:36.908Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-08T12:12:49.407Z",
+        "feature": "carrot",
+        "phase": "do",
+        "action": "updated"
+      }
+    ]
+  }
+}

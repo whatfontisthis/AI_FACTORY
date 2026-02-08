@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실시간 채팅 데모 - 당근마켓</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: #ff6f0f;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4caf50;
+    }
+
+    .status-indicator.disconnected {
+      background: #f44336;
+    }
+
+    .connection-controls {
+      padding: 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .control-group input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .control-group button {
+      padding: 10px 20px;
+      background: #ff6f0f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .control-group button:hover {
+      background: #e56000;
+    }
+
+    .control-group button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .messages-container {
+      height: 400px;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 70%;
+    }
+
+    .message.own {
+      margin-left: auto;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ff6f0f;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message-bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      background: #f1f3f5;
+      word-wrap: break-word;
+    }
+
+    .message.own .message-bubble {
+      background: #ff6f0f;
+      color: white;
+    }
+
+    .message-info {
+      font-size: 11px;
+      color: #868e96;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .message.own .message-info {
+      flex-direction: row-reverse;
+    }
+
+    .read-indicator {
+      font-size: 11px;
+      color: #ff6f0f;
+    }
+
+    .typing-indicator {
+      padding: 10px 20px;
+      color: #868e96;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .input-container {
+      padding: 20px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 24px;
+      font-size: 14px;
+    }
+
+    .input-container input:focus {
+      outline: none;
+      border-color: #ff6f0f;
+    }
+
+    .input-container button {
+      padding: 12px 24px;
+      background: #ff6f0f;
+      color: white;
+      border: none;
+      border-radius: 24px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .input-container button:hover:not(:disabled) {
+      background: #e56000;
+    }
+
+    .input-container button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .system-message {
+      text-align: center;
+      color: #868e96;
+      font-size: 12px;
+      padding: 8px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      margin: 8px auto;
+      max-width: 300px;
+    }
+
+    .info-panel {
+      padding: 15px 20px;
+      background: #e7f5ff;
+      border-bottom: 1px solid #74c0fc;
+      font-size: 13px;
+      color: #1971c2;
+    }
+
+    .api-docs {
+      padding: 20px;
+      background: #f8f9fa;
+      margin-top: 20px;
+      border-radius: 12px;
+    }
+
+    .api-docs h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #212529;
+    }
+
+    .api-docs pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.6;
+      border: 1px solid #e0e0e0;
+    }
+
+    .api-docs code {
+      color: #ff6f0f;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💬 실시간 채팅 데모</h1>
+      <div class="status">
+        <div class="status-indicator" id="statusIndicator"></div>
+        <span id="statusText">연결 대기중</span>
+      </div>
+    </div>
+
+    <div class="connection-controls">
+      <div class="control-group">
+        <input type="number" id="roomIdInput" placeholder="채팅방 ID (예: 1)" value="1">
+        <input type="number" id="userIdInput" placeholder="사용자 ID (예: 1)" value="1">
+        <button id="connectBtn" onclick="connectToRoom()">채팅방 입장</button>
+        <button id="disconnectBtn" onclick="disconnect()" disabled>퇴장</button>
+      </div>
+    </div>
+
+    <div class="info-panel" id="infoPanel" style="display: none;">
+      <strong>채팅방:</strong> <span id="currentRoom">-</span> |
+      <strong>사용자:</strong> <span id="currentUser">-</span>
+    </div>
+
+    <div class="messages-container" id="messagesContainer">
+      <div class="system-message">채팅방에 입장하여 대화를 시작하세요</div>
+    </div>
+
+    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+      상대방이 입력중입니다...
+    </div>
+
+    <div class="input-container">
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="메시지를 입력하세요..."
+        disabled
+        onkeypress="handleKeyPress(event)"
+        oninput="handleTyping()"
+      >
+      <button id="sendBtn" onclick="sendMessage()" disabled>전송</button>
+    </div>
+  </div>
+
+  <div class="container api-docs" style="margin-top: 20px;">
+    <h2>📚 WebSocket API 사용 가이드</h2>
+
+    <h3 style="margin-top: 20px; font-size: 16px;">연결</h3>
+    <pre><code>const ws = new WebSocket('ws://localhost:5000');
+
+// 채팅방 입장
+ws.send(JSON.stringify({
+  type: 'join_room',
+  room_id: 1,
+  user_id: 1
+}));</code></pre>
+
+    <h3 style="margin-top: 20px; font-size: 16px;">메시지 전송</h3>
+    <pre><code>ws.send(JSON.stringify({
+  type: 'send_message',
+  content: '안녕하세요!',
+  message_type: 'text'  // 'text', 'image', 'deleted'
+}));</code></pre>
+
+    <h3 style="margin-top: 20px; font-size: 16px;">읽음 표시</h3>
+    <pre><code>ws.send(JSON.stringify({
+  type: 'mark_read'
+}));</code></pre>
+
+    <h3 style="margin-top: 20px; font-size: 16px;">타이핑 표시</h3>
+    <pre><code>ws.send(JSON.stringify({
+  type: 'typing',
+  is_typing: true
+}));</code></pre>
+
+    <h3 style="margin-top: 20px; font-size: 16px;">REST API 엔드포인트</h3>
+    <pre><code>// 채팅방 생성
+POST /api/chat/rooms
+{ user1_id, user2_id, product_id }
+
+// 채팅방 목록
+GET /api/chat/rooms/user/:user_id
+
+// 메시지 조회
+GET /api/chat/rooms/:room_id/messages?page=1&limit=50
+
+// 메시지 전송 (REST)
+POST /api/chat/messages
+{ room_id, sender_id, content, message_type }
+
+// 읽음 처리
+PATCH /api/chat/messages/read
+{ room_id, user_id }
+
+// 안읽은 메시지 수
+GET /api/chat/messages/unread/:user_id</code></pre>
+  </div>
+
+  <script>
+    let ws = null;
+    let currentRoomId = null;
+    let currentUserId = null;
+    let typingTimeout = null;
+
+    function connectToRoom() {
+      const roomId = document.getElementById('roomIdInput').value;
+      const userId = document.getElementById('userIdInput').value;
+
+      if (!roomId || !userId) {
+        alert('채팅방 ID와 사용자 ID를 입력하세요');
+        return;
+      }
+
+      currentRoomId = parseInt(roomId);
+      currentUserId = parseInt(userId);
+
+      // WebSocket 연결
+      ws = new WebSocket('ws://localhost:5000');
+
+      ws.onopen = () => {
+        updateStatus('connected', '연결됨');
+
+        // 채팅방 입장
+        ws.send(JSON.stringify({
+          type: 'join_room',
+          room_id: currentRoomId,
+          user_id: currentUserId
+        }));
+
+        document.getElementById('connectBtn').disabled = true;
+        document.getElementById('disconnectBtn').disabled = false;
+        document.getElementById('messageInput').disabled = false;
+        document.getElementById('sendBtn').disabled = false;
+
+        document.getElementById('infoPanel').style.display = 'block';
+        document.getElementById('currentRoom').textContent = currentRoomId;
+        document.getElementById('currentUser').textContent = currentUserId;
+
+        // 기존 메시지 불러오기
+        loadMessages();
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleWebSocketMessage(data);
+      };
+
+      ws.onclose = () => {
+        updateStatus('disconnected', '연결 끊김');
+        document.getElementById('connectBtn').disabled = false;
+        document.getElementById('disconnectBtn').disabled = true;
+        document.getElementById('messageInput').disabled = true;
+        document.getElementById('sendBtn').disabled = true;
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        updateStatus('disconnected', '연결 오류');
+      };
+    }
+
+    function disconnect() {
+      if (ws) {
+        ws.send(JSON.stringify({ type: 'leave_room' }));
+        ws.close();
+        ws = null;
+      }
+      document.getElementById('infoPanel').style.display = 'none';
+      clearMessages();
+      addSystemMessage('채팅방에서 퇴장했습니다');
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const content = input.value.trim();
+
+      if (!content || !ws) return;
+
+      ws.send(JSON.stringify({
+        type: 'send_message',
+        content: content,
+        message_type: 'text'
+      }));
+
+      input.value = '';
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    function handleTyping() {
+      if (!ws) return;
+
+      // Send typing indicator
+      ws.send(JSON.stringify({
+        type: 'typing',
+        is_typing: true
+      }));
+
+      // Clear previous timeout
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+
+      // Stop typing after 2 seconds
+      typingTimeout = setTimeout(() => {
+        ws.send(JSON.stringify({
+          type: 'typing',
+          is_typing: false
+        }));
+      }, 2000);
+    }
+
+    function handleWebSocketMessage(data) {
+      switch (data.type) {
+        case 'joined':
+          addSystemMessage(`채팅방 ${data.room_id}에 입장했습니다`);
+          break;
+
+        case 'new_message':
+          addMessage(data.data);
+          scrollToBottom();
+
+          // Auto mark as read if message is from other user
+          if (data.data.sender_id !== currentUserId) {
+            markAsRead();
+          }
+          break;
+
+        case 'typing':
+          if (data.user_id !== currentUserId) {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.style.display = data.is_typing ? 'block' : 'none';
+          }
+          break;
+
+        case 'messages_read':
+          if (data.data.user_id !== currentUserId) {
+            updateReadStatus(data.data.message_ids);
+          }
+          break;
+
+        case 'error':
+          console.error('WebSocket error:', data.message);
+          addSystemMessage(`오류: ${data.message}`);
+          break;
+      }
+    }
+
+    function addMessage(message) {
+      const container = document.getElementById('messagesContainer');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${message.sender_id === currentUserId ? 'own' : ''}`;
+      messageDiv.dataset.messageId = message.id;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.textContent = message.sender_id;
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.textContent = message.content;
+
+      const info = document.createElement('div');
+      info.className = 'message-info';
+
+      const time = new Date(message.created_at).toLocaleTimeString('ko-KR', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      info.innerHTML = `<span>${time}</span>`;
+
+      if (message.sender_id === currentUserId && message.is_read) {
+        info.innerHTML += '<span class="read-indicator">읽음</span>';
+      }
+
+      contentDiv.appendChild(bubble);
+      contentDiv.appendChild(info);
+
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(contentDiv);
+
+      container.appendChild(messageDiv);
+    }
+
+    function addSystemMessage(text) {
+      const container = document.getElementById('messagesContainer');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'system-message';
+      messageDiv.textContent = text;
+      container.appendChild(messageDiv);
+    }
+
+    function clearMessages() {
+      document.getElementById('messagesContainer').innerHTML =
+        '<div class="system-message">채팅방에 입장하여 대화를 시작하세요</div>';
+    }
+
+    function updateStatus(status, text) {
+      const indicator = document.getElementById('statusIndicator');
+      const statusText = document.getElementById('statusText');
+
+      if (status === 'connected') {
+        indicator.classList.remove('disconnected');
+      } else {
+        indicator.classList.add('disconnected');
+      }
+
+      statusText.textContent = text;
+    }
+
+    function scrollToBottom() {
+      const container = document.getElementById('messagesContainer');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function markAsRead() {
+      if (!ws) return;
+
+      ws.send(JSON.stringify({
+        type: 'mark_read'
+      }));
+    }
+
+    function updateReadStatus(messageIds) {
+      messageIds.forEach(id => {
+        const messageDiv = document.querySelector(`[data-message-id="${id}"]`);
+        if (messageDiv && messageDiv.classList.contains('own')) {
+          const info = messageDiv.querySelector('.message-info');
+          if (!info.querySelector('.read-indicator')) {
+            const readSpan = document.createElement('span');
+            readSpan.className = 'read-indicator';
+            readSpan.textContent = '읽음';
+            info.appendChild(readSpan);
+          }
+        }
+      });
+    }
+
+    async function loadMessages() {
+      try {
+        const response = await fetch(`http://localhost:5000/api/chat/rooms/${currentRoomId}/messages?limit=50`);
+        const result = await response.json();
+
+        if (result.success && result.data.length > 0) {
+          clearMessages();
+          result.data.forEach(message => addMessage(message));
+          scrollToBottom();
+        }
+      } catch (error) {
+        console.error('Error loading messages:', error);
+      }
+    }
+  </script>
+</body>
+</html>

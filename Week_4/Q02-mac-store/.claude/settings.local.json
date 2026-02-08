@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix Toss Payments integration with working v1 SDK and checkout flow\n\n- Switch Toss SDK from v1/payment-widget to v1/payment \\(API individual key\\)\n- Add payment method selection UI \\(Card, Bank Transfer, Virtual Account, Mobile\\)\n- Fix hash router to strip query params from Toss redirect URLs\n- Fix amount mismatch by using backend integer amount for payment\n- Fix order confirmation page to merge items into order data\n- Add COOP header for Toss payment popup support\n- Handle USER_CANCEL gracefully without error toast\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "w4q2-online-shopping",
+  "version": "1.0.0",
+  "description": "Apple Mac shopping practice website with Firebase auth and Toss Payments",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "e-commerce",
+    "apple",
+    "mac",
+    "shopping",
+    "react",
+    "express",
+    "firebase",
+    "toss-payments"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.0",
+    "firebase-admin": "^12.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.12.0",
+    "playwright": "^1.58.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
