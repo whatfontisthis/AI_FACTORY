@@ -55,3 +55,11 @@ Week_3/
 ├── [✅] Q03 - What To Eat
 └── [✅] Q04 - My Netflix Review
 ```
+
+## Week 4 진행상황
+
+```
+Week_4/
+├── [✅] Q01 - Todo with DB & Sign-in
+└── [✅] Q02 - Mac Store (Online Shopping Mall)
+```
